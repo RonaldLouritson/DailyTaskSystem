@@ -1,0 +1,46 @@
+{% extends 'dashboard.html' %}
+
+{% block content %} 
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Edit "{{ job_issue.title }}"</h1>
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="title">Title:</label>
+                            <input type="text" class="form-control" id="title" name="title" value="{{ job_issue.title }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description:</label>
+                            <textarea class="form-control" id="description" name="description">{{ job_issue.description }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="attachment">Attachments:</label>
+                            <input type="file" class="form-control-file" id="attachment" name="attachment" multiple>
+                            {% for note in job_issue.note_set.all %}
+                                <a href="{{ note.attachment.url }}" target="_blank">{{ note.attachment.name }}</a> (<a href="{% url 'delete_note' pk=job_issue.category.id job_pk=job_issue.pk note_pk=note.pk %}">delete</a>)<br>
+                            {% endfor %}
+                        </div>
+                        {% comment %} <button type="submit" class="btn btn-primary" value="Save">Save</button> {% endcomment %}
+                        <button type="submit" class="btn btn-primary" value="Save" onclick="confirmSave()">Save</button>
+
+                        <script>
+                        function confirmSave() {
+                        // Display a confirmation dialog
+                        if (confirm("Are you sure you want to save?")) {
+                            // If user confirms, trigger the form submission
+                            document.forms[0].submit();
+                        }
+                        }
+                        </script>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
